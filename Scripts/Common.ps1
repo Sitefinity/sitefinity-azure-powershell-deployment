@@ -23,7 +23,14 @@ function Get-AzureSdkPath {
 	param($azureSdkPath)
     if(!$azureSdkPath) 
 	{
-        $azureSdkPath = (dir "$env:ProgramFiles\Microsoft SDKs\Windows Azure\.NET SDK" -ErrorAction SilentlyContinue | sort Name -desc | select -first 1 ).FullName
+        if(!(Test-Path "$env:ProgramFiles\Microsoft SDKs\Azure\.NET SDK"))
+        {
+            $azureSdkPath = (dir "$env:ProgramFiles\Microsoft SDKs\Windows Azure\.NET SDK" -ErrorAction SilentlyContinue | sort Name -desc | select -first 1 ).FullName
+        }
+        else
+        {
+            $azureSdkPath = (dir "$env:ProgramFiles\Microsoft SDKs\Azure\.NET SDK" -ErrorAction SilentlyContinue | sort Name -desc | select -first 1 ).FullName
+        }
     } 
 
 	if(!$azureSdkPath -or !(Test-Path $azureSdkPath)) 
