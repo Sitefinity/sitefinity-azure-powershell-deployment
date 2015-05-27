@@ -11,6 +11,7 @@ The repository contains scripts for easily Sitefinity deployment on Azure
 - Microsoft Azure Storage Tools
 - Microsoft Azure Storage Emulator
 - Microsoft Azure Tools for Microsoft Visual Studio
+- Microsoft Azure SDK 2.6 for .NET
 
 ## Getting Started
 
@@ -31,6 +32,12 @@ The repository contains scripts for easily Sitefinity deployment on Azure
 - Set your azure **password**
 - Set your azure **subscription**
 - Set the **certificate** properties which is used for **Remote Desktop Access** and for **SSL endpoint**
+
+### Using lower version of Azure SDK for .NET
+If a lower version of Azure SDK for .NET than the specified in the requirements is used - make sure to update the **schemaVersion** attribute in:
+-  CloudConfigs/ServiceConfiguration.Cloud.cscfg
+-  CloudConfigs/ServiceConfiguration.Local.cscfg
+-  CloudConfigs/ServiceDefinition.csdef
 
 ## Running the scripts
 
