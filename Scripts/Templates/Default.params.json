@@ -1,0 +1,51 @@
+﻿{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "siteName": {
+            "value": ""
+        },
+        "hostingPlanName": {
+            "value": ""
+        },
+        "siteLocation": {
+            "value": "West Europe"
+        },
+		"sku": {
+			"value": "Basic"
+		},
+        "workerSize": {
+            "value": "0"
+        },
+        "instancesCount": {
+            "value": 2
+        },
+        "sqlServerName": {
+            "value": ""
+        },
+        "sqlDatabaseName": {
+            "value": ""
+        },
+        "sqlServerLocation": {
+            "value": "West Europe"
+        },
+        "sqlServerAdminLogin": {
+            "value": ""
+        },
+		"sqlServerAdminLoginPassword": {
+            "value": ""
+        },
+        "redisCacheName": {
+            "value": ""
+        },
+        "redisCacheLocation": {
+            "value": "West Europe"
+        },
+        "redisCacheSKUName": {
+            "value": "Standard"
+        },
+        "redisCacheSKUCapacity": {
+            "value": 0
+        }
+    }
+}

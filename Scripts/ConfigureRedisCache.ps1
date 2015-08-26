@@ -1,8 +1,10 @@
 param(
 	[Parameter(Mandatory=$True)]
-	[String]$systemConfig,
-    [Parameter(Mandatory=$True)]
-	[String]$redisCacheConnectionString
+	[String]
+	$systemConfig,
+	[Parameter(Mandatory=$True)]
+	[String]
+    $redisCacheConnectionString
 )
 
 Write-Warning "Configuring redis cache..."
@@ -18,10 +20,14 @@ if($loadBalancingConfigNode -eq $null)
     $systemConfigNode.AppendChild($loadBalancingConfigNode)
 }
 
-$redisSettingsNode = $doc.CreateElement("redisSettings")
-$redisSettingsNode.SetAttribute("ConnectionString", $redisCacheConnectionString)
+$redisSettingsNode = $doc.SelectSingleNode("//systemConfig/loadBalancingConfig/redisSettings")
+if($redisSettingsNode -eq $null)
+{
+	$redisSettingsNode = $doc.CreateElement("redisSettings")
+    $loadBalancingConfigNode.AppendChild($redisSettingsNode)
+}
 
-$loadBalancingConfigNode.AppendChild($redisSettingsNode)
+$redisSettingsNode.SetAttribute("ConnectionString", $redisCacheConnectionString)
 
 $doc.Save($systemConfig)
 
