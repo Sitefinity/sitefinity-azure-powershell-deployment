@@ -45,7 +45,7 @@ DeployDatabasePackage $bacpacDatabaseFile $templateParams.parameters.sqlDatabase
 UpdateSitefinityWebConfig $websiteRootDirectory
 UpdateSitefinityDataConfig $websiteRootDirectory $sqlConnectionServer $sqlConnectionUsername $templateParams.parameters.sqlServerAdminLoginPassword.value $templateParams.parameters.sqlDatabaseName.value
 
- Configure Redis Cache
+# Configure Redis Cache
 $redisCacheName = $templateParams.parameters.redisCacheName.value
 $redisPrimaryKey = GetAzureRedisCacheKey -ResourceGroupName $ResourceGroupName -CacheName $redisCacheName
 $redisCacheConnectionString = "$redisPrimaryKey@$redisCacheName.redis.cache.windows.net?ssl=true"
@@ -53,7 +53,7 @@ LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
 . "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
 . "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
 
- Build deployment package
+# Build deployment package
 BuildSln $sitefinityProject "Package" $BuildConfiguration $buildParameters
 
 $sfPackageLocationPath =  Get-ChildItem $outputPath -Recurse -Include "SitefinityWebApp.zip"
