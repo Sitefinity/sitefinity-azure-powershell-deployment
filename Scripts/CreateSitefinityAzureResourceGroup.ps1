@@ -3,7 +3,7 @@
     $DatabaseName = "",
     $SqlServer = "",
     $ResourceGroupName = "",
-    $AzureAccount = "@.onmicrosoft.com",
+    $AzureAccount = "",
     $AzureAccountPassword = "",
     $ResourceGroupLocation = "West Europe",
     $TemplateFile = "$PSScriptRoot\Templates\Default.json",
@@ -52,6 +52,12 @@ $redisCacheConnectionString = "$redisPrimaryKey@$redisCacheName.redis.cache.wind
 LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
 . "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
 . "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
+
+# Configure Azure Search Service
+#$azureServiceAdminKey TODO
+#$azureSearchServiceName = $templateParams.parameters.azureSearchName.value
+#ConfigureAzureSearchService $config.files.searchConfig $azureServiceAdminKey $azureSearchServiceName
+#Copy-Item $config.files.searchConfig "$websiteRootDirectory\App_Data\Sitefinity\Configuration" -Force
 
 # Build deployment package
 BuildSln $sitefinityProject "Package" $BuildConfiguration $buildParameters

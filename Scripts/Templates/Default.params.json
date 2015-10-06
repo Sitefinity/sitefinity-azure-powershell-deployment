@@ -46,6 +46,21 @@
         },
         "redisCacheSKUCapacity": {
             "value": 0
+        },
+		"azureSearchName": {
+            "value": ""
+        },
+        "azureSearchLocation": {
+            "value": "West Europe"
+        },
+        "azureSearchSku": {
+            "value": "standard"
+        },
+        "azureSearchReplicaCount": {
+            "value": 1
+        },
+        "azureSearchPartitionCount": {
+            "value": 1
         }
     }
 }

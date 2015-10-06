@@ -9,9 +9,13 @@
 		"roleName": "SitefinityWebApp",
 		"environment": "Production",
 		"timeStampFormat": "g",
+		"resourceGroupName": "",
+		"azureAccount": "myschoolaccount@mydomain.onmicrosoft.com",
+		"azureAccountPassword": "",
 		"alwaysDeleteExistingDeployments": "1",
 		"enableDeploymentUpgrade": "1",
-		"sslEndpointName": "SslEndpoint"
+		"sslEndpointName": "SslEndpoint",
+		"storageAccountKey": ""
 	},
 	"files": { 
 		"serviceDefinition": "../CloudConfigs/ServiceDefinition.csdef",
@@ -19,7 +23,9 @@
 		"cloudConfig": "../CloudConfigs/ServiceConfiguration.Cloud.cscfg",
 		"subscriptionPublishSettings": "../CloudConfigs/Subscription1.publishsettings",
 		"azureSubscriptionDataConfig": "../CloudConfigs/AzureSubscriptionData.config",
-		"azureSqlServerInforFilePath": "../CloudConfigs/SQLAzureServerInfo.config"		
+		"azureSqlServerInforFilePath": "../CloudConfigs/SQLAzureServerInfo.config",
+		"diagnosticsConfig": "../CloudConfigs/diagnostics.wadcfgx",
+		"searchConfig": "../CloudConfigs/SearchConfig.config"
 	},
     "remoteAccessSettings": [
         {

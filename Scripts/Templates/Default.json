@@ -105,6 +105,45 @@
                 "Standard",
                 "Web"
             ]
+        },
+		"azureSearchName": {
+            "type": "string"
+        },
+        "azureSearchLocation": {
+            "type": "string"
+        },
+        "azureSearchSku": {
+            "type": "string",
+			"allowedValues": [
+                "free",
+                "standard",
+                "standard2"
+            ],
+            "defaultValue": "standard"
+        },
+        "azureSearchReplicaCount": {
+            "type": "int",
+			"allowedValues": [
+                1,
+				2,
+				3,
+				4,
+				5,
+				6
+            ],
+            "defaultValue": 1
+        },
+        "azureSearchPartitionCount": {
+            "type": "int",
+			"allowedValues": [
+                1,
+				2,
+				3,
+				4,
+				6,
+				12
+            ],
+            "defaultValue": 1
         }
     },
     "resources": [
@@ -422,6 +461,19 @@
                     }
                 }
             ]
+        },
+		{
+            "apiVersion": "2015-02-28",
+            "name": "[parameters('azureSearchName')]",
+            "type": "Microsoft.Search/searchServices",
+            "location": "[parameters('azureSearchLocation')]",
+            "properties": {
+            "sku": {
+                    "name": "[parameters('azureSearchSku')]"
+            },
+            "replicaCount": "[parameters('azureSearchReplicaCount')]",
+            "partitionCount": "[parameters('azureSearchPartitionCount')]"
+            }
         }
     ]
 }
