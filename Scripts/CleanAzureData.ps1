@@ -1,3 +1,4 @@
+#Removes Azure Database, Cloud Service and storage account
 ﻿param( [Parameter(Mandatory=$True)]$azureDatabaseName,
 	   [Parameter(Mandatory=$True)]$cloudServiceName,
 	   [Parameter(Mandatory=$True)]$storageAccountName
