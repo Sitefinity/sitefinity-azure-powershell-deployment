@@ -1,6 +1,20 @@
 # Sitefinity Azure PowerShell Deployment Scripts
 
-The repository contains scripts for easily Sitefinity deployment on Azure
+The repository contains scripts for easily Sitefinity deployment on Azure. You can use the scripts to integrate your Sitefinity to scalable continues integration and automatic deployments. 
+Scripts support deployment to 
+- Azure Cloud Service 
+- Azure Websites
+
+Scripts automatically prepare your Sitefinity instance for deployment by modifying needed settings. 
+
+Scripts support configuration for
+- Database instance - create SQL server or connect to existing one. If database doesn't exists new database is created and Sitefinity data then imported.
+- Redis Cache - create a new Redis Cache or use existing one. Note that it is better to use different Redis key prefixes for different instances in case you use one Redis Cache
+- Remote Desktop - option to connect to Cloud Service through remote desktop on the machine. This is not supported for Azure Websites
+- Extended Azure Logs - provides information about your Azure Role and thousands of metrics related to Azure environment
+- NLB instances - allows to use Sitefinity in NLB scenario - your Sitefinity license must support NLB
+- Azure Search - using Azure Search instead of built-in Lucene provider
+- Blob storage providers - use blob storage for your binary data instead of file system or database
 
 ## Requirements
 - Powershell 3.0+
