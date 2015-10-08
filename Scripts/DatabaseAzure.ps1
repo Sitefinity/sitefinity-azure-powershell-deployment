@@ -2,6 +2,7 @@
 $sqlpackageExe = Get-SqlPackageExePath
 
 # e.g. $bacpacDatabaseFile="C:\temp\DatabaseName.bacpac"
+#Creates azure database package locally by exporting the data from Sitefinity's database
 function CreateDatabasePackage($sqlServer, $databaseName, $bacpacDatabaseFile)
 {   
     LogMessage "Creating database package..."
@@ -9,6 +10,7 @@ function CreateDatabasePackage($sqlServer, $databaseName, $bacpacDatabaseFile)
     LogMessage "Database package has been created."
 }
 
+#Deploys Azure database package to azure database server
 function DeployDatabasePackage($bacpacDatabaseFile, $databaseName, $azureServer, $user, $password)
 {
     LogMessage "Importing database package..."

@@ -53,7 +53,7 @@ LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
 . "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
 . "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
 
-# Configure Azure Search Service
+# Configure Azure Search Service - currently no exposed API
 #$azureServiceAdminKey TODO
 #$azureSearchServiceName = $templateParams.parameters.azureSearchName.value
 #ConfigureAzureSearchService $config.files.searchConfig $azureServiceAdminKey $azureSearchServiceName

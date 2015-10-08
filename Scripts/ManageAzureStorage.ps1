@@ -1,4 +1,5 @@
-﻿function CreateStorageAccount($Name, $Location)
+﻿#Creates Storage Account
+function CreateStorageAccount($Name, $Location)
 {
     $sAccount = Get-AzureStorageAccount | where { $_.StorageAccountName -eq $Name }
 	if(!$sAccount)
@@ -21,6 +22,7 @@
 	Return @{AccountName = $Name; AccessKey = $key.Primary; ConnectionString = $connectionString}		
 }
 
+#Removes Storage account
 function RemoveStorageAccount($Name)
 {
 	LogMessage ("[Start] removing storage account {0}" -f $Name)

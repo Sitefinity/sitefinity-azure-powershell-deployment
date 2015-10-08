@@ -6,6 +6,7 @@ function Ensure-File([string]$path) {
     }
 }
 
+#Extended logging message
 function LogMessage($message)
 {
     $currentTime = Get-Date -Format "HH:mm:ss"
@@ -21,6 +22,7 @@ function Get-Settings([string]$settingsPath) {
     return $instance
 }
 
+#Gets azure sdk installation path
 function Get-AzureSdkPath {
 	param($azureSdkPath)
     if(!$azureSdkPath) 
@@ -46,6 +48,7 @@ function Get-AzureSdkPath {
     Return $azureSdkPath
 }
 
+#Gets the SQL package path needed to export database
 function Get-SqlPackageExePath
 {
     $MSSQLx64Directory = "$env:ProgramFiles\Microsoft SQL Server"
@@ -69,6 +72,7 @@ function Get-SqlPackageExePath
     throw "SqlPackage.exe was not found. Please ensure you have 'SqlPackage.exe' installed on your machine."
 }
 
+#Builds VS solution
 function BuildSln($sln, $target, $configuration, $paramsAsString)
 {
 	LogMessage "Start building '$sln'"

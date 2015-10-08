@@ -1,3 +1,4 @@
+#Configures Redis cache in Sitefinity
 param(
 	[Parameter(Mandatory=$True)]
 	[String]

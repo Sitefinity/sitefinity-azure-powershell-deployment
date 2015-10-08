@@ -1,3 +1,4 @@
+#Updates Sitefinity's Web.config file. Enables Windows Azure
 function UpdateSitefinityWebConfig($websiteRootDirectory)
 {
 	$webConfig = Join-Path $websiteRootDirectory "\web.config"
@@ -40,6 +41,7 @@ function UpdateSitefinityWebConfig($websiteRootDirectory)
 	$doc.Save($webConfig)
 }
 
+#Updates Sitefinity's DataConfig.config file. Adds Azure Database connectionstring.
 function UpdateSitefinityDataConfig($websiteRootDirectory, $azureServer, $user, $password, $database)
 {
 	$dataConfig = Join-Path $websiteRootDirectory "\App_Data\Sitefinity\Configuration\DataConfig.config"

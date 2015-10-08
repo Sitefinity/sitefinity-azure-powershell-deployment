@@ -1,3 +1,4 @@
+#Updates Azure Subscription data file
 function UpdateAzureSubscriptionData($currentStorageAccount, $cloudServiceName, $storageServiceName, $location)
 {
 	Set-ItemProperty $config.files.azureSubscriptionDataConfig -name IsReadOnly -value $false
@@ -207,6 +208,7 @@ function DeleteCertificatesNode
     $cscfgXml.Save($config.files.cloudConfig)
 }
 
+#Configures RemoteDesktop for Cloud Service
 function ConfigureRemoteDesktop
 {
     Param(
@@ -226,6 +228,7 @@ function ConfigureRemoteDesktop
     }
 }
 
+#Ads SSL to the service definition. Remote Desktip Requires SSL
 function ConfigureSsl
 {	
 	Param(

@@ -1,4 +1,5 @@
-﻿function Publish($serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment, $deploymentLabel, $timeStampFormat, $alwaysDeleteExistingDeployments, $enableDeploymentUpgrade, $selectedsubscription)
+﻿#Actual code that publishes the cloud service. It makes a new deployment or creates a new one
+function Publish($serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment, $deploymentLabel, $timeStampFormat, $alwaysDeleteExistingDeployments, $enableDeploymentUpgrade, $selectedsubscription)
 {
 	LogMessage ("[Publish] is called with the folling parameters 'Serivce name: {0}', 'Storage account name: {1}', 'Package location: {2}','Cloud config location: {3}', 'Environment: {4}' " -f $serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment)
 	

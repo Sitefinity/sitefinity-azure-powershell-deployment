@@ -1,5 +1,6 @@
 . "$PSScriptRoot\Common.ps1"
 
+#Creates Azure package file that will be uploaded to Cloud Service
 function CreatePackage($serviceDefinitionPath, $outDir, $projectLocation, $roleName, $rolePropertiesFilePath)
 {
     $out = [string]::Format("/out:{0}", $outDir)
