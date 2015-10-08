@@ -25,7 +25,7 @@ $systemConfigPath = Join-Path $websiteRootDirectory "App_Data\Sitefinity\Configu
 $outputPath = Join-Path $websiteRootDirectory "pkg"
 $buildParameters = "OutputPath=$outputPath;IgnoreDeployManagedRuntimeVersion=true;FilesToIncludeForPublish=AllFilesInProjectFolder"
 
-# Create new azure resource group
+# Create new azure resource group. This calls ManageAzureResourceGroup.ps1 that invokes New-AzureResourceGroup
 NewAzureResourceGroup -ResourceGroupName $ResourceGroupName `
                       -ResourceGroupLocation $ResourceGroupLocation `
                       -AzureAccount $AzureAccount `
