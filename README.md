@@ -1,6 +1,7 @@
 # Sitefinity Azure PowerShell Deployment Scripts
 
-The repository contains scripts for easily Sitefinity deployment on Azure. You can use the scripts to integrate your Sitefinity to scalable continues integration and automatic deployments. 
+The repository contains scripts for continuous deployment of Sitefinity sites to Azure. You can use the scripts to integrate your Sitefinity to scalable continues integration and automatic deployments. Scripts allow you to integrate uploads from source controls and repository tools like TFS, Git, and GitHub.
+You can use scripts to publish Sitefinity directly from your local computer to Azure Web Apps (Azure Websites) and Azure Cloud Service.
 
 # Features
 
