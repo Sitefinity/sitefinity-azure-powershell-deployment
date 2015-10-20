@@ -4,20 +4,20 @@ The repository contains scripts for easily Sitefinity deployment on Azure. You c
 
 # Features
 
-- Azure Cloud Service Deployment
-- Azure Websites Deployment
+- Azure Cloud Service Deployment -Highly available, scalable n-tier cloud apps with more control of the OS
+- Azure Websites Deployment -Scalable Web Apps
 
-Scripts automatically prepare your Sitefinity instance for deployment by modifying needed settings. 
+Scripts automatically prepare your Sitefinity instance for deployment by modifying needed configurations. 
 
 Scripts support configuration for
-- Database instance - create SQL server or connect to existing one. If database doesn't exists new database is created and Sitefinity data then imported.
-- Redis Cache - create a new Redis Cache or use existing one. Note that it is better to use different Redis key prefixes for different instances in case you use one Redis Cache
-- Remote Desktop - option to connect to Cloud Service through remote desktop on the machine. This is not supported for Azure Websites
+- Database instance - create SQL server or connect to existing one. If database doesn't exists new database is created and Sitefinity data is then imported to Azure Database.
+- Redis Cache - create a new Redis Cache or use existing one. Note that it is better to use different Redis key prefixes for different instances in case you use one Redis Cache.
+- Remote Desktop - option to connect to Cloud Service through remote desktop on the machine. This is not supported for Azure Websites.
 - Extended Azure Logs - provides information about your Azure Role and thousands of metrics related to Azure environment
 - NLB instances - allows to use Sitefinity in NLB scenario - your Sitefinity license must support NLB
-- Azure Search - using Azure Search instead of built-in Lucene provider
-- Blob storage providers - use blob storage for your binary data instead of file system or database
-- Use of publish settings fule (Management certificate authentication)
+- Azure Search - using Azure Search instead of built-in Lucene provider. Azure Search provides the engine for full-text search text analysis, advanced search features, search data storage, and a query command syntax
+- Blob storage providers - use blob storage for your binary data instead of file system or database.  Blob storage service allows you to store Sitefinity large amounts of unstructured data, such as text or binary data( images or videos), that can be accessed from anywhere in the world via HTTP or HTTPS. You can use Blob storage to expose data publicly to the world, or to store application data privately
+- Use of publish settings file (Management certificate authentication)
 
 ## Requirements
 - Powershell 3.0+
