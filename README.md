@@ -31,7 +31,7 @@ Scripts support configuration for
 - Microsoft Azure Tools for Microsoft Visual Studio
 - Microsoft Azure SDK 2.6 for .NET
 
-## Getting Started
+## Azure Cloud Service Deployment
 
 #### Update the **AzureSubscriptionData.config** file under **~\CloudConfigs** folder
  - Set your **SubscriptionId**
@@ -51,25 +51,33 @@ Scripts support configuration for
 - Set your azure **subscription**
 - Set the **certificate** properties which is used for **Remote Desktop Access** and for **SSL endpoint**
 
-NOTE: #The AzureResourceManager module used for WebApps deployment requires Add-AzureAccount. A Publish Settings file is not sufficient. Microsoft account cannot be used with powershell credential object with the Add-AzureAccount command so for that purpose we use an azure user. Here is additional info: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
-A resource group is a container that holds related resources for an application. The resource group could include all of the resources for an application, or only those resources that are logically grouped together. You can decide how you want to allocate resources to resource groups based on what makes the most sense for your organization. Azure Resource Manager templates enable you to quickly and easily provision your applications in Azure via declarative JSON. In a single JSON template, you can deploy multiple services, such as Virtual Machines, Virtual Networks, Storage, App Services, and databases. To simplify management of your application, you can organize all of the resources that share a common lifecycle into a single resource group.
-
 ### Using lower version of Azure SDK for .NET
 If a lower version of Azure SDK for .NET than the specified in the requirements is used - make sure to update the **schemaVersion** attribute in:
 -  CloudConfigs/ServiceConfiguration.Cloud.cscfg
 -  CloudConfigs/ServiceConfiguration.Local.cscfg
 -  CloudConfigs/ServiceDefinition.csdef
 
-## Running the scripts
-
 #### Run the script for Deploying Sitefinity to Azure Cloud Service
 
 .\DeploySitefinityToAzure.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer ".\SQLSERVER" -serviceName "myservicename" -storageAccountName "mystorageaccname" -enableRemoteDesktopAccess "true" -enableSsl "false"
 
-#### Run the script for Deploying Sitefinity to Azure Websites
-
-.\CreateSitefinityAzureResourceGroup.ps1 -websiteRootDirectory "C:\temp\SitefinityWebAp" -databaseName "SfDB1" -sqlServer "SFSQLLOCALSERVER" -resourceGroupName "NAME_FOR_RESOURCE_GROUP" -azureAccount "AccountUsername" azureAccountPassword "AccountPassword" resourceGroupLocation "West Europe" -templateFile  "$PSScriptRoot\Templates\Default.json" -templateParameterFile "$PSScriptRoot\Templates\Default.params.json" -buildConfiguration "Release"
-
 #### Run the script for cleaning the Azure storage, service and database
 
 .\CleanAzureData.ps1 -azureDatabaseName "SfDB1" -cloudServiceName "myservicename" -storageAccountName "mystorageaccname"
+
+## Azure WebApps Deployment
+
+NOTE: #The AzureResourceManager module used for WebApps deployment requires Add-AzureAccount. A Publish Settings file is not sufficient. Microsoft account cannot be used with powershell credential object with the Add-AzureAccount command so for that purpose we use an azure user. Here is additional info: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
+A resource group is a container that holds related resources for an application. The resource group could include all of the resources for an application, or only those resources that are logically grouped together. You can decide how you want to allocate resources to resource groups based on what makes the most sense for your organization. Azure Resource Manager templates enable you to quickly and easily provision your applications in Azure via declarative JSON. In a single JSON template, you can deploy multiple services, such as Virtual Machines, Virtual Networks, Storage, App Services, and databases. To simplify management of your application, you can organize all of the resources that share a common lifecycle into a single resource group.
+
+#### Setup for Azure WebApps deployment
+
+1. Fill in the data in the CloudConfigs -> Subscription1.publishsettings.
+1. Set the **subscription** property in the Scripts -> Configuration -> config.json
+1. Make sure there is a 'temp' folder inside Scripts. It is required when generating the database backup.
+1. Create your own template file or use the Default one. Be careful with the values of some properties, because there are some policies. For example there are policies for the sqlServerName, sqlPassword and search index name.
+1. (optional) To be able to sing-in to Azure with a non-work account via the script, in ManageAzureResourceGroup.ps1 remove the parameters for the **Add-AzureAccount** command. This way during execution a sign-in window will be shown instead.
+
+#### Run the script for Deploying Sitefinity to Azure Websites
+
+.\CreateSitefinityAzureResourceGroup.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer "SFSQLLOCALSERVER" -resourceGroupName "NAME_FOR_RESOURCE_GROUP" -azureAccount "AccountUsername" azureAccountPassword "AccountPassword" resourceGroupLocation "West Europe" -templateFile  "$PSScriptRoot\Templates\Default.json" -templateParameterFile "$PSScriptRoot\Templates\Default.params.json" -buildConfiguration "Release"
