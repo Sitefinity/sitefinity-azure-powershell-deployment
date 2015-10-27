@@ -80,4 +80,4 @@ A resource group is a container that holds related resources for an application.
 
 #### Run the script for Deploying Sitefinity to Azure Websites
 
-.\CreateSitefinityAzureResourceGroup.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer "SFSQLLOCALSERVER" -resourceGroupName "NAME_FOR_RESOURCE_GROUP" -azureAccount "AccountUsername" azureAccountPassword "AccountPassword" resourceGroupLocation "West Europe" -templateFile  "$PSScriptRoot\Templates\Default.json" -templateParameterFile "$PSScriptRoot\Templates\Default.params.json" -buildConfiguration "Release"
+.\CreateSitefinityAzureResourceGroup.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer "SFSQLLOCALSERVER" -resourceGroupName "NAME_FOR_RESOURCE_GROUP" -azureAccount "AccountUsername" -azureAccountPassword "AccountPassword" -resourceGroupLocation "West Europe" -templateFile  "$PSScriptRoot\Templates\Default.json" -templateParameterFile "$PSScriptRoot\Templates\Default.params.json" -buildConfiguration "Release"
