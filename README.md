@@ -58,13 +58,13 @@ If a lower version of Azure SDK for .NET than the specified in the requirements 
 -  CloudConfigs/ServiceDefinition.csdef
 
 #### Run the script for Deploying Sitefinity to Azure Cloud Service
-
+```powershell
 .\DeploySitefinityToAzure.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer ".\SQLSERVER" -serviceName "myservicename" -storageAccountName "mystorageaccname" -enableRemoteDesktopAccess "true" -enableSsl "false"
-
+```
 #### Run the script for cleaning the Azure storage, service and database
-
+```powershell
 .\CleanAzureData.ps1 -azureDatabaseName "SfDB1" -cloudServiceName "myservicename" -storageAccountName "mystorageaccname"
-
+```
 ## Azure WebApps Deployment
 
 NOTE: #The AzureResourceManager module used for WebApps deployment requires Add-AzureAccount. A Publish Settings file is not sufficient. Microsoft account cannot be used with powershell credential object with the Add-AzureAccount command so for that purpose we use an azure user. Here is additional info: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
@@ -79,5 +79,6 @@ A resource group is a container that holds related resources for an application.
 1. (optional) To be able to sing-in to Azure with a non-work account via the script, in ManageAzureResourceGroup.ps1 remove the parameters for the **Add-AzureAccount** command. This way during execution a sign-in window will be shown instead.
 
 #### Run the script for Deploying Sitefinity to Azure Websites
-
+```powershell
 .\CreateSitefinityAzureResourceGroup.ps1 -websiteRootDirectory "C:\temp\SitefinityWebApp" -databaseName "SfDB1" -sqlServer "SFSQLLOCALSERVER" -resourceGroupName "NAME_FOR_RESOURCE_GROUP" -azureAccount "AccountUsername" -azureAccountPassword "AccountPassword" -resourceGroupLocation "West Europe" -templateFile  "$PSScriptRoot\Templates\Default.json" -templateParameterFile "$PSScriptRoot\Templates\Default.params.json" -buildConfiguration "Release"
+```
