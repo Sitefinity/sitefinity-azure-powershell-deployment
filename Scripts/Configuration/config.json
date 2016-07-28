@@ -1,10 +1,36 @@
 {
 	"azure": {
-		"serverName": "yourServerName", 
-		"server": "yourServerName.database.windows.net",
-		"user": "yourUsername",
-		"password": "yourPassword",
-		"subscription":"yourSubscription",
+		"sql" : [
+			{
+				"location": "West Europe",
+				"serverName": "", 
+				"server": "",
+				"user": "",
+				"password": ""
+			},
+			{
+				"location": "South Central US",
+				"serverName": "", 
+				"server": "",
+				"user": "",
+				"password": ""
+			},
+			{
+				"location": "North Central US",
+				"serverName": "", 
+				"server": "",
+				"user": "",
+				"password": ""
+			},
+			{
+				"location": "East Asia",
+				"serverName": "", 
+				"server": "",
+				"user": "",
+				"password": ""
+			}
+		],
+		"subscription":"Sitefinity Core Subscription(Converted to EA)",
 		"accountsLocation": "West Europe",
 		"roleName": "SitefinityWebApp",
 		"environment": "Production",
@@ -14,8 +40,9 @@
 		"azureAccountPassword": "",
 		"alwaysDeleteExistingDeployments": "1",
 		"enableDeploymentUpgrade": "1",
-		"sslEndpointName": "SslEndpoint",
-		"storageAccountKey": ""
+		"sslEndpointName": "",
+		"storageAccountKey": "",
+		"accessCredentialsOutputPath": ""
 	},
 	"files": { 
 		"serviceDefinition": "../CloudConfigs/ServiceDefinition.csdef",
@@ -42,17 +69,16 @@
         },
         {
             "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration",
-            "value": "2015-11-06T00:00:00.0000000+02:00"
+            "value": "2017-01-22T23:59:59.0000000+02:00"
         },
         {
             "name": "Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled",
             "value": "true"
         }
     ],
-    "certificate":
-    {		
-		"path":"path to your certificate",
-		"password":"your remote access password",
+    "certificate": {		
+		"path":"../Certificates/AzureCertWithPrvKey.pfx",
+		"password":"",
         "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.PasswordEncryption",
         "thumbprint": "your certificate thumbprint",
         "thumbprintAlgorithm": "sha1"

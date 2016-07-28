@@ -1,8 +1,10 @@
-#Updates Azure Subscription data file
 function UpdateAzureSubscriptionData($currentStorageAccount, $cloudServiceName, $storageServiceName, $location)
 {
-	Set-ItemProperty $config.files.azureSubscriptionDataConfig -name IsReadOnly -value $false
-	[Xml]$sdXml = Get-Content $config.files.azureSubscriptionDataConfig 
+    $azureSubscriptionDataConfig = Resolve-Path "$PSScriptRoot\$($config.files.azureSubscriptionDataConfig)"
+    Write-Host "Azure subscription data config is: $azureSubscriptionDataConfig"
+
+	Set-ItemProperty $azureSubscriptionDataConfig -name IsReadOnly -value $false
+	[Xml]$sdXml = Get-Content $azureSubscriptionDataConfig
 
     #update Current storage account
     $sdXml.AzureSubscriptionData.CurrentStorageAccount = $currentStorageAccount
@@ -20,19 +22,34 @@ function UpdateAzureSubscriptionData($currentStorageAccount, $cloudServiceName, 
        $storageService.Name =  $storageServiceName
     }
 
-    $sdXml.Save($config.files.azureSubscriptionDataConfig)
+    $sdXml.Save($azureSubscriptionDataConfig)
 }
 
 function UpdateServiceConfigurationCloudData($AccountName, $AccountKey)
 {
-	Set-ItemProperty $config.files.cloudConfig -name IsReadOnly -value $false
-	[Xml]$cscfgXml = Get-Content $config.files.cloudConfig 
+    $cloudConfig = Resolve-Path "$PSScriptRoot\$($config.files.cloudConfig)"
+    Write-Host "Cloud config path is: $cloudConfig"
+
+	Set-ItemProperty $cloudConfig -name IsReadOnly -value $false
+	[Xml]$cscfgXml = Get-Content $cloudConfig
 	$connectionStringValue = [string]::Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", $AccountName, $AccountKey) 
 
     $settingNode =  $cscfgXml.ServiceConfiguration.Role.ConfigurationSettings.Setting | where {$_.name -like 'Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString'}
 	$settingNode.Value = $connectionStringValue
 
-	$cscfgXml.Save($config.files.cloudConfig)
+	$cscfgXml.Save($cloudConfig)
+}
+
+function UpdateInstancesCount($count)
+{
+    $cloudConfig = Resolve-Path "$PSScriptRoot\$($config.files.cloudConfig)"
+    Write-Host "Cloud config path is: $cloudConfig"
+
+	Set-ItemProperty $cloudConfig -name IsReadOnly -value $false
+	[Xml]$cscfgXml = Get-Content $cloudConfig
+	$instancesNode = $cscfgXml.ServiceConfiguration.Role.Instances;
+	$instancesNode.count = $count
+	$cscfgXml.Save($cloudConfig)
 }
 
 # Example: UpdateVMSize -ServiceDefinitionPath "C:\Temp\Tools\AzureDeployment\CloudConfigs\ServiceDefinition.csdef" -VMSize "big"
@@ -118,16 +135,19 @@ function DeleteVMModules
 
 function UpdateSQLAzureServerInfoData($rootDatabase, $targetDatabase)
 {
-	Set-ItemProperty $config.files.azureSqlServerInforFilePath -name IsReadOnly -value $false
-	[Xml]$sdInfoXml = Get-Content $config.files.azureSqlServerInforFilePath
+    $azureSqlServerInforFilePath = Resolve-Path "$PSScriptRoot\$($config.files.azureSqlServerInforFilePath)"
+    Write-Host "Sql Server Info file Path is: $azureSqlServerInforFilePath"
 
-	$sdInfoXml.ServerInfo.ServerInstance = $config.azure.server
-	$sdInfoXml.ServerInfo.Login = $config.azure.user
-	$sdInfoXml.ServerInfo.Password = $config.azure.password
+	Set-ItemProperty $azureSqlServerInforFilePath -name IsReadOnly -value $false
+	[Xml]$sdInfoXml = Get-Content $azureSqlServerInforFilePath
+
+	$sdInfoXml.ServerInfo.ServerInstance = $sqlConfig.server
+	$sdInfoXml.ServerInfo.Login = $sqlConfig.user
+	$sdInfoXml.ServerInfo.Password = $sqlConfig.password
     $sdInfoXml.ServerInfo.RootDatabase = $rootDatabase
     $sdInfoXml.ServerInfo.TargetDatabase = $targetDatabase
 
-    $sdInfoXml.Save($config.files.azureSqlServerInforFilePath)
+    $sdInfoXml.Save($azureSqlServerInforFilePath)
 }
 
 function GenerateRemoteDesktopRequiredSettingsNodes($serviceConfigurationPath)
@@ -173,8 +193,11 @@ function RemoveRemoteDesktopRequiredSettingsNodes($serviceConfigurationPath)
 
 function AddCertificatesNode
 {
-    Set-ItemProperty $config.files.cloudConfig -name IsReadOnly -value $false
-	[Xml]$cscfgXml = Get-Content $config.files.cloudConfig
+    $cloudConfig = Resolve-Path "$PSScriptRoot\$($config.files.cloudConfig)"
+    Write-Host "Cloud config path is: $cloudConfig"
+
+    Set-ItemProperty $cloudConfig -name IsReadOnly -value $false
+	[Xml]$cscfgXml = Get-Content $cloudConfig
 
     $roleElement = $cscfgXml.ServiceConfiguration.Role
     $xdNS = $cscfgXml.DocumentElement.NamespaceURI
@@ -192,23 +215,25 @@ function AddCertificatesNode
 	$elem.SetAttribute('thumbprint', $config.certificate.thumbprint)
 	$elem.SetAttribute('thumbprintAlgorithm', $config.certificate.thumbprintAlgorithm)
 
-    $cscfgXml.Save($config.files.cloudConfig)
+    $cscfgXml.Save($cloudConfig)
 }
 
 function DeleteCertificatesNode
 {
-    Set-ItemProperty $config.files.cloudConfig -name IsReadOnly -value $false
-	[Xml]$cscfgXml = Get-Content $config.files.cloudConfig
+    $cloudConfig = Resolve-Path "$PSScriptRoot\$($config.files.cloudConfig)"
+    Write-Host "Cloud config path is: $cloudConfig"
+
+    Set-ItemProperty $cloudConfig -name IsReadOnly -value $false
+	[Xml]$cscfgXml = Get-Content $cloudConfig
     $nsmgr = New-Object Xml.XmlNamespaceManager $cscfgXml.NameTable
     $nsmgr.AddNamespace("ns", $cscfgXml.DocumentElement.NamespaceURI)
     $certificatesNode = $cscfgXml.SelectSingleNode("//ns:ServiceConfiguration/ns:Role/ns:Certificates", $nsmgr)
 	if($certificatesNode -ne $null) {   
         $certificatesNode.ParentNode.RemoveChild($certificatesNode)
     }
-    $cscfgXml.Save($config.files.cloudConfig)
+    $cscfgXml.Save($cloudConfig)
 }
 
-#Configures RemoteDesktop for Cloud Service
 function ConfigureRemoteDesktop
 {
     Param(
@@ -216,27 +241,34 @@ function ConfigureRemoteDesktop
         [string]$EnableRemoteDesktopAccess
 	)
 
-    Set-ItemProperty $config.files.cloudConfig -name IsReadOnly -value $false
-	[Xml]$cscfgXml = Get-Content $config.files.cloudConfig 
+    $cloudConfig = Resolve-Path "$PSScriptRoot\$($config.files.cloudConfig)"
+    $serviceDefinition = Resolve-Path "$PSScriptRoot\$($config.files.serviceDefinition)"
+    Write-Host "Cloud config path is: $cloudConfig"
+    Write-Host "Service Definition Path is: $serviceDefinition"
+
+    Set-ItemProperty $cloudConfig -name IsReadOnly -value $false
+	[Xml]$cscfgXml = Get-Content $cloudConfig 
     if($EnableRemoteDesktopAccess -eq "true")
     {
-	    UpdateVMModules -ServiceDefinitionPath $config.files.serviceDefinition -Modules @("RemoteAccess", "RemoteForwarder")
-        GenerateRemoteDesktopRequiredSettingsNodes $config.files.cloudConfig
+	    UpdateVMModules -ServiceDefinitionPath $serviceDefinition -Modules @("RemoteAccess", "RemoteForwarder")
+        GenerateRemoteDesktopRequiredSettingsNodes $cloudConfig
     } else {
-        DeleteVMModules -ServiceDefinitionPath $config.files.serviceDefinition -Modules @("RemoteAccess", "RemoteForwarder")
-        RemoveRemoteDesktopRequiredSettingsNodes $config.files.cloudConfig
+        DeleteVMModules -ServiceDefinitionPath $serviceDefinition -Modules @("RemoteAccess", "RemoteForwarder")
+        RemoveRemoteDesktopRequiredSettingsNodes $cloudConfig
     }
 }
 
-#Ads SSL to the service definition. Remote Desktip Requires SSL
 function ConfigureSsl
 {	
 	Param(
         [Parameter(Mandatory=$true)]
         [string]$EnableSsl
 	)
-	Set-ItemProperty $config.files.serviceDefinition -name IsReadOnly -value $false
-    [Xml]$XMLfile = Get-Content $config.files.serviceDefinition
+    $serviceDefinition = Resolve-Path "$PSScriptRoot\$($config.files.serviceDefinition)"
+    Write-Host "Service Definition Path is: $serviceDefinition"
+
+	Set-ItemProperty $serviceDefinition -name IsReadOnly -value $false
+    [Xml]$XMLfile = Get-Content $serviceDefinition
 	$xdns = $XMLfile.DocumentElement.NamespaceURI
 	
     if($EnableSsl -eq "true") {
@@ -267,5 +299,5 @@ function ConfigureSsl
         } 
     }
 		
-	$XMLFile.save($config.files.serviceDefinition)
+	$XMLFile.save($serviceDefinition)
 }

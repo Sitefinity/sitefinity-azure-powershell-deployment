@@ -1,5 +1,4 @@
-﻿#Creates Cloud Service
-function CreateCloudService($Name, $Location)
+﻿function CreateCloudService($Name, $Location)
 { 
 	$service = Get-AzureService | where { $_.ServiceName -eq $Name }
 	if(!$service)
@@ -16,7 +15,6 @@ function CreateCloudService($Name, $Location)
 	Return @{ServiceName = $Name}
 }
 
-#Removes Cloud Service
 function RemoveCloudService($Name)
 {
 	LogMessage ("[Start] removing cloud service {0}" -f $Name)

@@ -25,7 +25,7 @@ $systemConfigPath = Join-Path $websiteRootDirectory "App_Data\Sitefinity\Configu
 $outputPath = Join-Path $websiteRootDirectory "pkg"
 $buildParameters = "OutputPath=$outputPath;IgnoreDeployManagedRuntimeVersion=true;FilesToIncludeForPublish=AllFilesInProjectFolder"
 
-# Create new azure resource group. This calls ManageAzureResourceGroup.ps1 that invokes New-AzureResourceGroup
+# Create new azure resource group
 NewAzureResourceGroup -ResourceGroupName $ResourceGroupName `
                       -ResourceGroupLocation $ResourceGroupLocation `
                       -AzureAccount $AzureAccount `
@@ -50,10 +50,10 @@ $redisCacheName = $templateParams.parameters.redisCacheName.value
 $redisPrimaryKey = GetAzureRedisCacheKey -ResourceGroupName $ResourceGroupName -CacheName $redisCacheName
 $redisCacheConnectionString = "$redisPrimaryKey@$redisCacheName.redis.cache.windows.net?ssl=true"
 LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
-. "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
-. "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
+. "$PSScriptRoot\..\..\CommonScripts\PowerShell\Common\SitefinitySetup\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
+. "$PSScriptRoot\..\..\CommonScripts\PowerShell\Common\SitefinitySetup\ConfigureTestNlbHandlers.ps1" $systemConfigPath
 
-# Configure Azure Search Service - currently no exposed API
+# Configure Azure Search Service
 #$azureServiceAdminKey TODO
 #$azureSearchServiceName = $templateParams.parameters.azureSearchName.value
 #ConfigureAzureSearchService $config.files.searchConfig $azureServiceAdminKey $azureSearchServiceName

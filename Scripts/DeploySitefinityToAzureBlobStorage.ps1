@@ -12,7 +12,8 @@
       $instanceCount = '1',
 	  $licenseVersion = "9.1",
       $accountLocation = "West Europe",
-	  $createIrisUser = "false")
+	  $createIrisUser = "false",
+      $skipDeployment = "false")
       
 . "$PSScriptRoot\Modules.ps1"
 
@@ -65,12 +66,18 @@ try
     
     if($deployDatabase -eq "true")
     {        
-        DeleteAzureDatabase $sqlConfig.serverName $databaseName $sqlConfig.user $sqlConfig.password
-
         $generatedCredentials = GenerateUniqueAdminCredentials $sqlServer $databaseName
         if($generatedCredentials -ne $null)
         {
             DeleteDefaultAdminUser $sqlServer $databaseName
+
+            $accessCredentialsOutputPath = Join-Path $config.azure.accessCredentialsOutputPath $serviceName
+            if(!(Test-Path $accessCredentialsOutputPath))
+            {
+                New-Item $accessCredentialsOutputPath -ItemType Directory
+            }
+
+            Generate-AccessCredentialsFiles -credentialsInfo $generatedCredentials -outputPath $accessCredentialsOutputPath
         }
 
 		if($createIrisUser -eq "true")
@@ -79,8 +86,13 @@ try
 		}
 
 	    CreateDatabasePackage $sqlServer $databaseName $bacpacDatabaseFile 
-	    DeployDatabasePackage $bacpacDatabaseFile $databaseName $sqlConfig.server $sqlConnectionUsername $sqlConfig.password
-	    UpdateSQLAzureServerInfoData $databaseName $databaseName             
+        
+        if($skipDeployment -ne "true")
+        {
+            DeleteAzureDatabase $sqlConfig.serverName $databaseName $sqlConfig.user $sqlConfig.password
+	        DeployDatabasePackage $bacpacDatabaseFile $databaseName $sqlConfig.server $sqlConnectionUsername $sqlConfig.password
+	        UpdateSQLAzureServerInfoData $databaseName $databaseName     
+        }        
     }
     else
     {
@@ -116,45 +128,39 @@ try
         LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
         . "$PSScriptRoot\..\..\CommonScripts\PowerShell\Common\SitefinitySetup\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
     }
-    
-	$serv = CreateCloudService $serviceName $accountLocation
-	$acc = CreateStorageAccount $storageAccountName $accountLocation
-	UpdateAzureSubscriptionData $acc.AccountName  $serv.ServiceName  $acc.AccountName $accountLocation
-	UpdateServiceConfigurationCloudData $acc.AccountName $acc.AccessKey
-    if($enableSsl -eq "true" -or $enableRemoteDesktopAccess -eq "true")
-    {        
-       AddCertificateToService $serviceName $certificatePath $config.certificate.password
-       AddCertificatesNode
-    } else {
-       DeleteCertificatesNode
-    }
-    ConfigureSsl -EnableSsl $enableSsl
-    ConfigureRemoteDesktop -EnableRemoteDesktopAccess $enableRemoteDesktopAccess
-	UpdateVMSize -ServiceDefinitionPath "$serviceDefinitionPath" -VMSize $vmSize
-             
+
     CreatePackage $serviceDefinitionPath $azurePackage $websiteRootDirectory $config.azure.roleName $rolePropertiesPath
-    Publish $serv.ServiceName $acc.AccountName $azurePackage $cloudConfigPath $config.azure.environment $deploymentLabel $config.azure.timeStampFormat $config.azure.alwaysDeleteExistingDeployments $config.azure.enableDeploymentUpgrade $config.azure.subscription $subscriptionPublishSettingsPath
 
-    if($generatedCredentials -ne $null)
+    if($skipDeployment -ne "true")
     {
-        $accessCredentialsOutputPath = Join-Path $config.azure.accessCredentialsOutputPath $serviceName
-        if(!(Test-Path $accessCredentialsOutputPath))
-        {
-            New-Item $accessCredentialsOutputPath -ItemType Directory
+	    $serv = CreateCloudService $serviceName $accountLocation
+	    $acc = CreateStorageAccount $storageAccountName $accountLocation
+	    UpdateAzureSubscriptionData $acc.AccountName  $serv.ServiceName  $acc.AccountName $accountLocation
+	    UpdateServiceConfigurationCloudData $acc.AccountName $acc.AccessKey
+        if($enableSsl -eq "true" -or $enableRemoteDesktopAccess -eq "true")
+        {        
+           AddCertificateToService $serviceName $certificatePath $config.certificate.password
+           AddCertificatesNode
+        } else {
+           DeleteCertificatesNode
         }
+        ConfigureSsl -EnableSsl $enableSsl
+        ConfigureRemoteDesktop -EnableRemoteDesktopAccess $enableRemoteDesktopAccess
+	    UpdateVMSize -ServiceDefinitionPath "$serviceDefinitionPath" -VMSize $vmSize
+             
+        Publish $serv.ServiceName $acc.AccountName $azurePackage $cloudConfigPath $config.azure.environment $deploymentLabel $config.azure.timeStampFormat $config.azure.alwaysDeleteExistingDeployments $config.azure.enableDeploymentUpgrade $config.azure.subscription $subscriptionPublishSettingsPath
 
-        Generate-AccessCredentialsFiles -credentialsInfo $generatedCredentials -outputPath $accessCredentialsOutputPath
         if($enableRemoteDesktopAccess -eq "true")
         {
             Generate-RdpAccessFile -serviceName $serviceName -outputPath $accessCredentialsOutputPath
         }
-    }
 
-    if($enableDiagnostics -eq "true")
-    {
-        LogMessage "Setting AzureServiceDiagnosticsExtension..."
-        $storageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $config.azure.storageAccountKey   
-        Set-AzureServiceDiagnosticsExtension -ServiceName $serviceName -DiagnosticsConfigurationPath $diagnosticsConfigPath -StorageContext $storageContext -Role $config.azure.roleName
+        if($enableDiagnostics -eq "true")
+        {
+            LogMessage "Setting AzureServiceDiagnosticsExtension..."
+            $storageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $config.azure.storageAccountKey   
+            Set-AzureServiceDiagnosticsExtension -ServiceName $serviceName -DiagnosticsConfigurationPath $diagnosticsConfigPath -StorageContext $storageContext -Role $config.azure.roleName
+        }
     }
 }
 finally

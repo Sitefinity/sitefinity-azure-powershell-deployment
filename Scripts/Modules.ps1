@@ -11,6 +11,7 @@
 . "$PSScriptRoot\UpdateAzureCloudConfigs.ps1"
 . "$PSScriptRoot\UpdateSitefinityConfigs.ps1"
 . "$PSScriptRoot\CertificatesManagement.ps1"
+. "$PSScriptRoot\GetSitefinityLicense.ps1"
 
 #configure powershell with Azure 1.7 modules
 Import-Module "C:\Program Files (x86)\Microsoft SDKs\Azure\PowerShell\ServiceManagement\Azure\Azure.psd1"
