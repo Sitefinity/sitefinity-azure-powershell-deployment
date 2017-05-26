@@ -1,0 +1,1 @@
+PowerShell -ExecutionPolicy Unrestricted -File .\ConfigureIISAppPool.ps1

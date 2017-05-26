@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="WindowsAzure1" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2015-04.2.6">
   <WebRole name="SitefinityWebApp" vmsize="Small">
+  	<!--
+    <Startup>
+      <Task commandLine="ConfigureIISAppPool.cmd" executionContext="elevated" taskType="simple" />
+      <Task commandLine="ManageConfigACL.cmd" executionContext="elevated" taskType="background" />
+    </Startup>
+	-->
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" />
     </ConfigurationSettings>
@@ -18,6 +24,8 @@
     </Endpoints>
     <Imports>
       <Import moduleName="Diagnostics" />
+      <Import moduleName="RemoteAccess" />
+      <Import moduleName="RemoteForwarder" />
     </Imports>
     <LocalResources>
       <LocalStorage name="LibrariesTemp" cleanOnRoleRecycle="true" sizeInMB="1024" />
