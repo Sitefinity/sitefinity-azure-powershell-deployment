@@ -24,7 +24,14 @@ to Azure App Services. The deployment will set the minimal Pricing Tiers for the
 . "$PSScriptRoot\Modules.ps1"
 
 $sitefinityProject = Join-Path $websiteRootDirectory "SitefinityWebApp.csproj"
-$bacpacDatabaseFile = "$PSScriptRoot\temp\$databaseName.bacpac"
+$tempDir = "$PSScriptRoot\temp"
+
+if(!(Test-Path $tempDir))
+{
+    New-Item $tempDir -ItemType Directory -Force
+}
+
+$bacpacDatabaseFile = "$tempDir\$databaseName.bacpac"
 
 $sqlConfig = $config.azure.sql | Where-Object { $_.location -eq $websiteLocation }
 
