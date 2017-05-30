@@ -14,11 +14,12 @@ to Azure App Services.
  param([Parameter(Mandatory=$True)]$websiteRootDirectory,
       [Parameter(Mandatory=$True)]$databaseName,
       [Parameter(Mandatory=$True)]$sqlServer,
-	  [Parameter(Mandatory=$True)]$websiteName,
-	  $websiteLocation = "West Europe",
-	  $deployDatabase = $true,
+      [Parameter(Mandatory=$True)]$websiteName,
+      $redisCacheConnectionString,
+      $websiteLocation = "West Europe",
+      $deployDatabase = $true,
       $buildConfiguration = "Release",
-	  $launchWebsite = $true)
+      $launchWebsite = $true)
 
 . "$PSScriptRoot\Modules.ps1"
 
@@ -71,8 +72,6 @@ LogMessage 'Add-AzureWebsite: End'
 # First the database is packed from local isntance and then imported to the destination Azure server
 if($deployDatabase)
 {
-    DeleteAzureDatabase $sqlConfig.serverName $databaseName $sqlConfig.user $sqlConfig.password
-
     CreateDatabasePackage $sqlServer $databaseName $bacpacDatabaseFile 
     DeployDatabasePackage $bacpacDatabaseFile $databaseName $sqlConfig.server $sqlConnectionUsername $sqlConfig.password 
 }
@@ -85,9 +84,16 @@ else
 UpdateSitefinityWebConfig $websiteRootDirectory
 UpdateSitefinityDataConfig $websiteRootDirectory $sqlConfig.server $sqlConnectionUsername $sqlConfig.password $databaseName
 
-# Configure Redis Cache
-. "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath
-. "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
+if([string]::IsNullOrEmpty($redisCacheConnectionString))
+{
+	LogMessage "Redis connection string not specified. Skipping redis configuration"
+}
+else
+{
+	# Configure Redis Cache
+	. "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
+	. "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
+}
 
 # Build deployment package
 BuildSln $sitefinityProject "Package" $buildConfiguration $buildParameters
