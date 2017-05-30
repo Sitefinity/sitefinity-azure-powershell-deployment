@@ -5,7 +5,7 @@ Script to deploy web app to Azure App Services.
 
 .DESCRIPTION
 This Powershell Script applies the required modifications and deploys the database and the sitefinity web app
-to Azure App Services.
+to Azure App Services. The deployment will set the minimal Pricing Tiers for the Database(Basic) and for the App Service(Free).
 
 .EXAMPLE
 .\DeploySitefinityToAzureAppService.ps1 -$websiteRootDirectory "pathToSitefinityWebApp" -databaseName "localDbName" -sqlServer "localSqlServerInstance" -websiteName "yourWebsiteName" -$redisCacheConnectionString "primaryKey@redisCacheName.redis.cache.windows.net?ssl=true"
