@@ -8,7 +8,7 @@ This Powershell Script applies the required modifications and deploys the databa
 to Azure App Services.
 
 .EXAMPLE
-.\DeploySitefinityToAzureAppService.ps1 -$websiteRootDirectory "C:\SitefinityWebApp_10_0_6400_0\testdeployment" -databaseName "testdeploymentdb" -sqlServer ".\SQLSERVER" -websiteName "testdeployment"
+.\DeploySitefinityToAzureAppService.ps1 -$websiteRootDirectory "pathToSitefinityWebApp" -databaseName "localDbName" -sqlServer "localSqlServerInstance" -websiteName "yourWebsiteName" -$redisCacheConnectionString "primaryKey@redisCacheName.redis.cache.windows.net?ssl=true"
 
 #>
  param([Parameter(Mandatory=$True)]$websiteRootDirectory,
