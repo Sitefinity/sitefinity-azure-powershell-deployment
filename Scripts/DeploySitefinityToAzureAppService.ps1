@@ -99,7 +99,6 @@ else
 {
 	# Configure Redis Cache
 	. "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
-	. "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
 }
 
 # Build deployment package
