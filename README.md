@@ -65,9 +65,6 @@ If a lower version of Azure SDK for .NET than the specified in the requirements 
 ```
 ## Azure App Services Deployment
 
-NOTE: #The AzureResourceManager module used for WebApps deployment requires Add-AzureAccount. A Publish Settings file is not sufficient. Microsoft account cannot be used with powershell credential object with the Add-AzureAccount command so for that purpose we use an azure user. Here is additional info: https://azure.microsoft.com/en-us/documentation/articles/powershell-install-configure/
-A resource group is a container that holds related resources for an application. The resource group could include all of the resources for an application, or only those resources that are logically grouped together. You can decide how you want to allocate resources to resource groups based on what makes the most sense for your organization. Azure Resource Manager templates enable you to quickly and easily provision your applications in Azure via declarative JSON. In a single JSON template, you can deploy multiple services, such as Virtual Machines, Virtual Networks, Storage, App Services, and databases. To simplify management of your application, you can organize all of the resources that share a common lifecycle into a single resource group.
-
 #### Setup for Azure App Services deployment
 1. Set Subscription Information
    1. Run ```Get-AzurePublishSettingsFile``` powershell command or simply navigate to https://manage.windowsazure.com/publishsettings/index?client=powershell to download the publish settings file for your subscription.
