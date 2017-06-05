@@ -1,4 +1,4 @@
-﻿  <#
+<#
 
 .SYNOPSIS
 Script to deploy web app to Azure Cloud Services.
@@ -54,7 +54,6 @@ try
     $subscriptionPublishSettingsPath = Resolve-Path "$PSScriptRoot\$($config.files.subscriptionPublishSettings)"
     $rolePropertiesPath = Resolve-Path "$PSScriptRoot\$($config.files.roleProperties)"
     $diagnosticsConfigPath = Resolve-Path "$PSScriptRoot\$($config.files.diagnosticsConfig)"
-    $certificatePath = Resolve-Path "$PSScriptRoot\$($config.certificate.path)"
 
 	Write-Host "Cleaning up Azure Subscriptions"
 	Get-AzureSubscription | % { Remove-AzureSubscription $_.SubscriptionName -Force } 
@@ -75,11 +74,9 @@ try
     
     if($deployDatabase -eq "true")
     {        
-        DeleteAzureDatabase $sqlConfig.serverName $databaseName $sqlConfig.user $sqlConfig.password
-
-	    CreateDatabasePackage $sqlServer $databaseName $bacpacDatabaseFile 
-	    DeployDatabasePackage $bacpacDatabaseFile $databaseName $sqlConfig.server $sqlConnectionUsername $sqlConfig.password
-	    UpdateSQLAzureServerInfoData $databaseName $databaseName             
+		CreateDatabasePackage $sqlServer $databaseName $bacpacDatabaseFile 
+		DeployDatabasePackage $bacpacDatabaseFile $databaseName $sqlConfig.server $sqlConnectionUsername $sqlConfig.password
+		UpdateSQLAzureServerInfoData $databaseName $databaseName             
     }
     else
     {
@@ -93,7 +90,7 @@ try
 
     if([int]$instanceCount -gt 1)
     {
-	    UpdateSitefinityWebConfig $websiteRootDirectory
+	UpdateSitefinityWebConfig $websiteRootDirectory
     }
     if($enableDiagnostics -eq "true")
     {
@@ -121,7 +118,8 @@ try
 	UpdateAzureSubscriptionData $acc.AccountName  $serv.ServiceName  $acc.AccountName $accountLocation
 	UpdateServiceConfigurationCloudData $acc.AccountName $acc.AccessKey
     if($enableSsl -eq "true" -or $enableRemoteDesktopAccess -eq "true")
-    {        
+    {  
+       $certificatePath = Resolve-Path "$PSScriptRoot\$($config.certificate.path)"
        AddCertificateToService $serviceName $certificatePath $config.certificate.password
        AddCertificatesNode
     } else {
@@ -137,7 +135,8 @@ try
     if($enableDiagnostics -eq "true")
     {
         LogMessage "Setting AzureServiceDiagnosticsExtension..."
-        $storageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $config.azure.storageAccountKey   
+        $storageAccountKey = (Get-AzureStorageKey -StorageAccountName $storageAccountName).Primary
+        $storageContext = New-AzureStorageContext -StorageAccountName $storageAccountName -StorageAccountKey $storageAccountKey   
         Set-AzureServiceDiagnosticsExtension -ServiceName $serviceName -DiagnosticsConfigurationPath $diagnosticsConfigPath -StorageContext $storageContext -Role $config.azure.roleName
     }
 }
