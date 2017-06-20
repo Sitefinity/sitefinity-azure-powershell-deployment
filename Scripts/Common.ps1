@@ -6,7 +6,6 @@ function Ensure-File([string]$path) {
     }
 }
 
-#Extended logging message
 function LogMessage($message)
 {
     $currentTime = Get-Date -Format "HH:mm:ss"
@@ -22,7 +21,6 @@ function Get-Settings([string]$settingsPath) {
     return $instance
 }
 
-#Gets azure sdk installation path
 function Get-AzureSdkPath {
 	param($azureSdkPath)
     if(!$azureSdkPath) 
@@ -45,17 +43,16 @@ function Get-AzureSdkPath {
     }
 
     Write-Host "SDK path has been set to $azureSdkPath.";
-    Return $azureSdkPath
+    return $azureSdkPath
 }
 
-#Gets the SQL package path needed to export database
 function Get-SqlPackageExePath
 {
     $MSSQLx64Directory = "$env:ProgramFiles\Microsoft SQL Server"
     $MSSQLx86Directory = "${env:ProgramFiles(x86)}\Microsoft SQL Server"
     if(Test-Path $MSSQLx64Directory)
     {
-        $sqlPackageExe = Get-ChildItem $MSSQLx64Directory -Include SqlPackage.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+        $sqlPackageExe = Get-ChildItem $MSSQLx64Directory -Include SqlPackage.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -Last 1
         if($sqlPackageExe -ne $null)
         {
             return $sqlPackageExe
@@ -63,7 +60,7 @@ function Get-SqlPackageExePath
     }
     if(Test-Path $MSSQLx86Directory)
     {
-        $sqlPackageExe = Get-ChildItem $MSSQLx86Directory -Include SqlPackage.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+        $sqlPackageExe = Get-ChildItem $MSSQLx86Directory -Include SqlPackage.exe -Recurse -ErrorAction SilentlyContinue | Select-Object -Last 1
         if($sqlPackageExe -ne $null)
         {
             return $sqlPackageExe
@@ -72,7 +69,6 @@ function Get-SqlPackageExePath
     throw "SqlPackage.exe was not found. Please ensure you have 'SqlPackage.exe' installed on your machine."
 }
 
-#Builds VS solution
 function BuildSln($sln, $target, $configuration, $paramsAsString)
 {
 	LogMessage "Start building '$sln'"

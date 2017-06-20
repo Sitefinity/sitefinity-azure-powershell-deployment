@@ -1,0 +1,1 @@
+PowerShell -ExecutionPolicy Unrestricted -File .\ManageConfigACL.ps1

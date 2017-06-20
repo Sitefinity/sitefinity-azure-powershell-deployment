@@ -1,5 +1,4 @@
-﻿#Actual code that publishes the cloud service. It makes a new deployment or creates a new one
-function Publish($serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment, $deploymentLabel, $timeStampFormat, $alwaysDeleteExistingDeployments, $enableDeploymentUpgrade, $selectedsubscription)
+﻿function Publish($serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment, $deploymentLabel, $timeStampFormat, $alwaysDeleteExistingDeployments, $enableDeploymentUpgrade, $selectedsubscription)
 {
 	LogMessage ("[Publish] is called with the folling parameters 'Serivce name: {0}', 'Storage account name: {1}', 'Package location: {2}','Cloud config location: {3}', 'Environment: {4}' " -f $serviceName, $storageAccountName, $packageLocation, $cloudConfigLocation, $environment)
 	
@@ -69,6 +68,7 @@ function UpgradeDeployment()
     write-progress -id 3 -activity "Upgrading Deployment" -Status "In progress"
     LogMessage "Upgrading Deployment: In progress"
 
+    LogMessage "Slot: '$slot', Label: '$deploymentLabel', ServiceName: '$serviceName'"
     # perform Update-Deployment
     $setdeployment = Set-AzureDeployment -Upgrade -Slot $slot -Package $packageLocation -Configuration $cloudConfigLocation -label $deploymentLabel -ServiceName $serviceName -Force
     

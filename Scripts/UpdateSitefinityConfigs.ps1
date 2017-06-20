@@ -1,4 +1,3 @@
-#Updates Sitefinity's Web.config file. Enables Windows Azure
 function UpdateSitefinityWebConfig($websiteRootDirectory)
 {
 	$webConfig = Join-Path $websiteRootDirectory "\web.config"
@@ -41,7 +40,6 @@ function UpdateSitefinityWebConfig($websiteRootDirectory)
 	$doc.Save($webConfig)
 }
 
-#Updates Sitefinity's DataConfig.config file. Adds Azure Database connectionstring.
 function UpdateSitefinityDataConfig($websiteRootDirectory, $azureServer, $user, $password, $database)
 {
 	$dataConfig = Join-Path $websiteRootDirectory "\App_Data\Sitefinity\Configuration\DataConfig.config"
@@ -49,10 +47,71 @@ function UpdateSitefinityDataConfig($websiteRootDirectory, $azureServer, $user, 
     $doc = New-Object System.Xml.XmlDocument
     $doc.Load($dataConfig)	
 	$connectionString = "Server=$azureServer;User ID=$user;Password=$password;Database=$database; Trusted_Connection=False;Encrypt=True"
-    $dbTypeAttr = $doc.SelectSingleNode("//dataConfig/connectionStrings/add/@dbType")
-    $dbTypeAttr.Value = "SqlAzure"    
     $connectionStringAttr = $doc.SelectSingleNode("//dataConfig/connectionStrings/add/@connectionString")
     $connectionStringAttr.Value = $connectionString
 
+    $dbTypeAttr = $doc.SelectSingleNode("//dataConfig/connectionStrings/add/@dbType")
+    if($dbTypeAttr)    
+    {
+        $dbTypeAttr.Value = "SqlAzure"    
+    }
+    else
+    {
+        $connectionStringNode = $doc.SelectSingleNode("//dataConfig/connectionStrings/add")
+        $dbTypeAttribute = $doc.CreateAttribute("dbType")
+        $dbTypeAttribute.Value = "SqlAzure"
+        $connectionStringNode.Attributes.Append($dbTypeAttribute)
+    }
+
     $doc.Save($dataConfig)
+}
+
+function EnableAzureTraceListener($websiteRootDirectory)
+{
+    $webConfig = Join-Path $websiteRootDirectory "\web.config"
+    Set-ItemProperty $webConfig -name IsReadOnly -value $false
+    $doc = New-Object System.Xml.XmlDocument
+	$doc.Load($webConfig)
+
+    
+    if($doc.SelectSingleNode("//configuration/system.diagnostics/trace/listeners/add[@name='AzureDiagnostics']") -eq $null)
+    {
+        $traceListenersNode = $doc.SelectSingleNode("//configuration/system.diagnostics/trace/listeners")
+        if($traceListenersNode -eq $null)
+	    {
+            $traceNode = $doc.SelectSingleNode("//configuration/system.diagnostics/trace")
+            if($traceNode -eq $null)
+	        {
+                $diagnosticsNode = $doc.SelectSingleNode("//configuration/system.diagnostics")
+                if($diagnosticsNode -eq $null)
+                {
+                    $diagnosticsNode = $doc.CreateElement("system.diagnostics")
+                    $doc.SelectSingleNode("//configuration").AppendChild($diagnosticsNode)
+                }
+                $traceNode = $doc.CreateElement("trace")
+                $diagnosticsNode.AppendChild($traceNode)
+            }
+            $traceListenersNode = $doc.CreateElement("listeners")
+            $traceNode.AppendChild($traceListenersNode)
+	    }
+        $azureDiagnosticsNode = $doc.CreateElement("add")
+        $azureDiagnosticsNode.SetAttribute("type", "Microsoft.WindowsAzure.Diagnostics.DiagnosticMonitorTraceListener, Microsoft.WindowsAzure.Diagnostics, Version=2.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35")
+        $azureDiagnosticsNode.SetAttribute("name", "AzureDiagnostics")
+        $filterNode = $doc.CreateElement("filter")
+        $filterNode.SetAttribute("type", "")
+        $azureDiagnosticsNode.AppendChild($filterNode)
+        $traceListenersNode.AppendChild($azureDiagnosticsNode)
+        $doc.Save($webConfig)
+    }
+}
+
+function ConfigureAzureSearchService($searchConfig, $azureServiceAdminKey, $azureSearchServiceName)
+{
+    Set-ItemProperty $searchConfig -name IsReadOnly -value $false
+    $doc = New-Object System.Xml.XmlDocument
+	$doc.Load($searchConfig)    
+    $azureSearchServiceNode = $doc.SelectSingleNode("//searchConfig/searchServices/add")
+    $azureSearchServiceNode.Attributes['azureServiceAdminKey'].Value = $azureServiceAdminKey
+    $azureSearchServiceNode.Attributes['azureSearchServiceName'].Value = $azureSearchServiceName
+    $doc.Save($searchConfig)
 }

@@ -25,7 +25,7 @@ $systemConfigPath = Join-Path $websiteRootDirectory "App_Data\Sitefinity\Configu
 $outputPath = Join-Path $websiteRootDirectory "pkg"
 $buildParameters = "OutputPath=$outputPath;IgnoreDeployManagedRuntimeVersion=true;FilesToIncludeForPublish=AllFilesInProjectFolder"
 
-# Create new azure resource group. This calls ManageAzureResourceGroup.ps1 that invokes New-AzureResourceGroup
+# Create new azure resource group
 NewAzureResourceGroup -ResourceGroupName $ResourceGroupName `
                       -ResourceGroupLocation $ResourceGroupLocation `
                       -AzureAccount $AzureAccount `
@@ -53,7 +53,7 @@ LogMessage "RedisCache connection string: '$redisCacheConnectionString'"
 . "$PSScriptRoot\ConfigureRedisCache.ps1" $systemConfigPath $redisCacheConnectionString
 . "$PSScriptRoot\ConfigureTestNlbHandlers.ps1" $systemConfigPath
 
-# Configure Azure Search Service - currently no exposed API
+# Configure Azure Search Service  - currently no exposed API
 #$azureServiceAdminKey TODO
 #$azureSearchServiceName = $templateParams.parameters.azureSearchName.value
 #ConfigureAzureSearchService $config.files.searchConfig $azureServiceAdminKey $azureSearchServiceName

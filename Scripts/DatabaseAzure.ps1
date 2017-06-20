@@ -2,7 +2,6 @@
 $sqlpackageExe = Get-SqlPackageExePath
 
 # e.g. $bacpacDatabaseFile="C:\temp\DatabaseName.bacpac"
-#Creates azure database package locally by exporting the data from Sitefinity's database
 function CreateDatabasePackage($sqlServer, $databaseName, $bacpacDatabaseFile)
 {   
     LogMessage "Creating database package..."
@@ -10,13 +9,12 @@ function CreateDatabasePackage($sqlServer, $databaseName, $bacpacDatabaseFile)
     LogMessage "Database package has been created."
 }
 
-#Deploys Azure database package to azure database server
 function DeployDatabasePackage($bacpacDatabaseFile, $databaseName, $azureServer, $user, $password)
 {
     LogMessage "Importing database package..."
     try
     {
-    & $sqlpackageExe /a:Import /sf:$bacpacDatabaseFile /tsn:$azureServer /tdn:$databaseName /tu:$user /tp:$password
+    & $sqlpackageExe /a:Import /sf:$bacpacDatabaseFile /tsn:$azureServer /tdn:$databaseName /tu:$user /tp:$password /p:DatabaseEdition="Basic"
     } catch {
         if(!($_.Exception.Message -ne $null -and $_.Exception.Message.Contains("compatibility issues with SQL Azure")))
         {
@@ -26,7 +24,7 @@ function DeployDatabasePackage($bacpacDatabaseFile, $databaseName, $azureServer,
     LogMessage "Database package has been imported"
 }
 
-# The serverName must the be just the name of the azure server e.g. "servername" and not the full server address "servername.database.windows.net"
+# The serverName must the be just the name of the azure server e.g. "servername" and not the full server address "vdxlfno62c.database.windows.net"
 function DeleteAzureDatabase($serverName, $databaseName, $user, $password)
 {
     $db_password = ConvertTo-SecureString -String $password -AsPlainText -Force
@@ -35,4 +33,38 @@ function DeleteAzureDatabase($serverName, $databaseName, $user, $password)
     LogMessage "Deleting $databaseName from Azure $serverName server..."
     Remove-AzureSqlDatabase -Context $context -DatabaseName $databaseName -Force
     LogMessage "$databaseName database deleted from Azure $serverName server."
+}
+
+function EnsureDBDeleted($sqlServer, $dbName)
+{
+    [System.Reflection.Assembly]::LoadWithPartialName("Microsoft.SqlServer.SMO") | out-null
+    $Server = New-Object Microsoft.SqlServer.Management.Smo.Server($sqlServer)
+    $DBObject = $Server.Databases[$dbName]
+    if ($DBObject)
+    {
+	    LogMessage "Deleting '$dbName' database from '$sqlServer' SQL Server."
+		$Server.KillAllProcesses($dbName)
+	    $Server.KillDatabase($dbName)
+    }
+}
+
+function ImportDatabaseFromAzure($azureServer, $databaseName, $user, $password, $sqlServer)
+{
+    LogMessage "Exporting '$databaseName' database from '$azureServer' azure server..."
+    $bacpacDatabaseFile = "$PSScriptRoot\$databaseName.bacpac"
+    & $sqlpackageExe /a:Export /ssn:$azureServer /sdn:$databaseName /su:$user /sp:$password /tf:$bacpacDatabaseFile
+
+    EnsureDBDeleted $sqlServer $databaseName
+
+    LogMessage "Importing '$databaseName' database from '$azureServer' azure server..."
+    & $sqlpackageExe /a:Import /sf:$bacpacDatabaseFile /tdn:$databaseName /tsn:$sqlServer
+
+    Remove-Item $bacpacDatabaseFile
+}
+
+function BackupDatabase($sqlServer, $databaseName, $bakupFolder)
+{
+    New-Item -ItemType Directory -Path $bakupFolder -Force
+    $dbBakFullPath = $bakupFolder+"\" + $databaseName +".bak"
+    SQLCMD.EXE -S $sqlServer -E -q "exit(BACKUP DATABASE [$databaseName] TO DISK='$dbBakFullPath')"
 }

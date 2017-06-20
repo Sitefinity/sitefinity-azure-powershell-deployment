@@ -1,22 +1,27 @@
 {
-	"azure": {
-		"serverName": "yourServerName", 
-		"server": "yourServerName.database.windows.net",
-		"user": "yourUsername",
-		"password": "yourPassword",
-		"subscription":"yourSubscription",
-		"accountsLocation": "West Europe",
-		"roleName": "SitefinityWebApp",
-		"environment": "Production",
-		"timeStampFormat": "g",
-		"resourceGroupName": "",
-		"azureAccount": "myschoolaccount@mydomain.onmicrosoft.com",
-		"azureAccountPassword": "",
-		"alwaysDeleteExistingDeployments": "1",
-		"enableDeploymentUpgrade": "1",
-		"sslEndpointName": "SslEndpoint",
-		"storageAccountKey": ""
-	},
+  "azure": {
+    "sql": [
+      {
+        "location": "",
+        "serverName": "yourServerName",
+        "server": "yourServerName.database.windows.net",
+        "user": "yourUsername",
+        "password": "yourPassword"
+      }
+    ],
+    "subscription": "",
+    "accountsLocation": "West Europe",
+    "roleName": "SitefinityWebApp",
+    "environment": "Production",
+    "timeStampFormat": "g",
+    "resourceGroupName": "",
+    "azureAccount": "myschoolaccount@mydomain.onmicrosoft.com",
+    "azureAccountPassword": "",
+    "alwaysDeleteExistingDeployments": "1",
+    "enableDeploymentUpgrade": "1",
+    "sslEndpointName": "SslEndpoint",
+    "storageAccountKey": ""
+  },
 	"files": { 
 		"serviceDefinition": "../CloudConfigs/ServiceDefinition.csdef",
 		"roleProperties": "../CloudConfigs/RoleProperties.txt",
@@ -32,17 +37,17 @@
             "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.Enabled",
             "value": "true"
         },
-        {
-            "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername",
-            "value": "sitefinity"
-        },
-        {
-            "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword",
-            "value": "yourAccountEncryptedPassword"
-        },
+      {
+        "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountUsername",
+        "value": "sitefinity"
+      },
+      {
+        "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountEncryptedPassword",
+        "value": "yourAccountEncryptedPassword"
+      },
         {
             "name": "Microsoft.WindowsAzure.Plugins.RemoteAccess.AccountExpiration",
-            "value": "2015-11-06T00:00:00.0000000+02:00"
+            "value": "2018-01-22T23:59:59.0000000+02:00"
         },
         {
             "name": "Microsoft.WindowsAzure.Plugins.RemoteForwarder.Enabled",
