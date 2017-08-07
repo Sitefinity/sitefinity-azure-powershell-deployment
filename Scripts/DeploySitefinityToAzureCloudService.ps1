@@ -104,7 +104,8 @@ try
         #The AzureResourceManager module requires Add-AzureAccount. A Publish Settings file is not sufficient.
         $secpassword = ConvertTo-SecureString $config.azure.azureAccountPassword -AsPlainText -Force
         $credentials = New-Object System.Management.Automation.PSCredential ($config.azure.azureAccount, $secpassword)
-        Add-AzureAccount -Credential $credentials
+        Add-AzureRmAccount -Credential $credentials
+		Select-AzureSubscription $config.azure.subscription
         $redisCacheName = "$($serviceName)redis"
         $redisPrimaryKey = NewAzureRedisCache -CacheName $redisCacheName -ResourceGroupName $config.azure.resourceGroupName -Location $config.azure.accountsLocation
         $redisCacheConnectionString = "$redisPrimaryKey@$redisCacheName.redis.cache.windows.net?ssl=true"
